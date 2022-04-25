@@ -35,6 +35,7 @@ static void last_poped_element(t_stacks **stackAB, int pop, t_list ** head)
 {
     t_list * empty;
 
+    empty = NULL;
     *head = (*stackAB)->stacks[pop];
     (*stackAB)->stacks[pop] = empty;
 }
@@ -87,7 +88,16 @@ void push(t_stacks *stackAB, int push, int pop)
             head->prev = stackAB->stacks[push]->prev;
             stackAB->stacks[push]->prev->next = head;
             stackAB->stacks[push]->prev = head;
+            stackAB->stacks[push] = head;
             stackAB->lenght[push]++;
+
+//            t_list * stackLast = stackAB->stacks[index]->prev;
+//            stackLast->next = stackNew;
+//            stackAB->stacks[index]->prev = stackNew;
+//            stackNew->next = stackAB->stacks[index];
+//            stackNew->prev = stackLast;
+//            stackAB->stacks[index] = stackNew;
+//            stackAB->lenght[index]++;
         }
         stackAB->lenght[pop]--;
     }
