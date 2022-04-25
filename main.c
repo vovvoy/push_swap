@@ -82,6 +82,8 @@ int main(int argc, char** argv)
 //        swap(&stackAB, 0);
         push(&stackAB, 1, 0);
         push(&stackAB, 1, 0);
+        push(&stackAB, 0, 1);
+        push(&stackAB, 0, 1);
     }
     return (0);
 }
