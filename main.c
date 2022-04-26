@@ -80,6 +80,8 @@ int main(int argc, char** argv)
     if (argc > 1){
         ft_isdigit(argc, argv, &stackAB);
 //        swap(&stackAB, 0);
+		rotate_or_reverse_rotate(&stackAB, 0, '+');
+		
         push(&stackAB, 1, 0);
         push(&stackAB, 1, 0);
         push(&stackAB, 0, 1);

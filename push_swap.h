@@ -40,14 +40,6 @@ static void last_poped_element(t_stacks **stackAB, int pop, t_list ** head)
     (*stackAB)->stacks[pop] = empty;
 }
 
-static void first_pushed_element(t_stacks *stackAB, int push, t_list * new)
-{
-    stackAB->stacks[push] = new;
-    stackAB->stacks[push]->next = stackAB->stacks[push];
-    stackAB->stacks[push]->prev = stackAB->stacks[push];
-    stackAB->lenght[push]++;
-}
-
 static void other_poped_elements(t_stacks **stackAB, int pop, t_list ** head)
 {
     t_list * last;
@@ -61,6 +53,29 @@ static void other_poped_elements(t_stacks **stackAB, int pop, t_list ** head)
     (*stackAB)->stacks[pop] = second;
 }
 
+static void first_pushed_element(t_stacks *stackAB, int push, t_list * new)
+{
+	stackAB->stacks[push] = new;
+	stackAB->stacks[push]->next = stackAB->stacks[push];
+	stackAB->stacks[push]->prev = stackAB->stacks[push];
+	stackAB->lenght[push]++;
+}
+
+void rotate_or_reverse_rotate(t_stacks *stackAB, int index, char rot_or_rev)
+{
+	if (stackAB->lenght[index] > 1)
+	{
+		if (rot_or_rev == '+')
+		{
+			stackAB->stacks[index] = stackAB->stacks[index]->next;
+		}
+		else if (rot_or_rev == '-')
+		{
+			stackAB->stacks[index] = stackAB->stacks[index]->prev;
+		}
+	}
+}
+
 void push(t_stacks *stackAB, int push, int pop)
 {
     t_list * head;
@@ -70,16 +85,7 @@ void push(t_stacks *stackAB, int push, int pop)
         if (stackAB->lenght[pop] == 1)
             last_poped_element(&stackAB, pop, &head);
         else
-        {
             other_poped_elements(&stackAB, pop, &head);
-
-//            last = stackAB->stacks[pop]->prev;
-//            head = stackAB->stacks[pop];
-//            second = stackAB->stacks[pop]->next;
-//            last->next = second;
-//            second->prev = last;
-//            stackAB->stacks[pop] = second;
-        }
         if (stackAB->lenght[push] == 0)
             first_pushed_element(stackAB, push, head);
         else
@@ -90,14 +96,6 @@ void push(t_stacks *stackAB, int push, int pop)
             stackAB->stacks[push]->prev = head;
             stackAB->stacks[push] = head;
             stackAB->lenght[push]++;
-
-//            t_list * stackLast = stackAB->stacks[index]->prev;
-//            stackLast->next = stackNew;
-//            stackAB->stacks[index]->prev = stackNew;
-//            stackNew->next = stackAB->stacks[index];
-//            stackNew->prev = stackLast;
-//            stackAB->stacks[index] = stackNew;
-//            stackAB->lenght[index]++;
         }
         stackAB->lenght[pop]--;
     }
