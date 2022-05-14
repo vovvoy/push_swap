@@ -48,9 +48,25 @@ int  ft_atoi(char *argument){
     return (int)(n * sign);
 }
 
+void ft_isduplicate(int *arr, int number)
+{
+    unsigned int i;
+
+    i = number;
+    if (arr[i] == 1)
+    {
+        write(1, "Error:\n\tDuplicate arguments found!", 33);
+        exit(1);
+    }
+    arr[i] = 1;
+}
+
 void ft_isdigit(int len, char **arguments, t_stacks *stackAB){
     unsigned int i;
     char * copy_argument;
+//    int arr[4294967295];
+    int arr[2147];
+    int arg;
 
     i = 0;
     while (++i < len)
@@ -67,8 +83,130 @@ void ft_isdigit(int len, char **arguments, t_stacks *stackAB){
             }
             copy_argument++;
         }
-        fill_stack(stackAB, ft_atoi(arguments[i]), 0);
+        arg = ft_atoi(arguments[i]);
+//        ft_isduplicate(arr, arg);
+        fill_stack(stackAB, arg, 0);
     }
+}
+
+int ft_num_len(int number)
+{
+    int tmp;
+    int len;
+
+    if (number < 0)
+    {
+        number = -number;
+        len = 2;
+    }
+    else
+        len = 1;
+    tmp = number;
+    while (tmp / 10)
+    {
+        tmp = tmp / 10;
+        len++;
+    }
+    return (len);
+}
+
+void ft_tree_elem(t_stacks *stackAB)
+{
+    int a[3];
+
+    while(1)
+    {
+        a[0] = stackAB->stacks[0]->data;
+        a[1] = stackAB->stacks[0]->next->data;
+        a[2] = stackAB->stacks[0]->prev->data;
+        if ((a[2] > a[1] && a[2] > a[0] && a[0] > a[1]) ||
+            (a[0] > a[1] && a[0] > a[2] && a[1] > a[2]) ||
+            (a[1] > a[2] && a[1] > a[0] && a[2] > a[0]))
+        {
+            swap(stackAB, 0);
+            write(1, "sa\n", 3);
+        }
+        else if (a[1] > a[0] && a[1] > a[2] && a[0] > a[2])
+        {
+            rotate_or_reverse_rotate(stackAB, 0, '-');
+            write(1, "rra\n", 4);
+        }
+        else if (a[0] > a[1] && a[0] > a[2]  && a[2] > a[1])
+        {
+            rotate_or_reverse_rotate(stackAB, 0, '+');
+            write(1, "ra\n", 3);
+        }
+        else
+            break;
+    }
+}
+
+void ft_two_elem(t_stacks *stackAB)
+{
+    if (stackAB->stacks[0]->data > stackAB->stacks[0]->next->data)
+    {
+        rotate_or_reverse_rotate(stackAB, 0, '+');
+        write(1, "ra\n", 3);
+    }
+}
+
+void ft_best_move(t_stacks *stackAB)
+{
+
+
+}
+
+void ft_print_whitespace(int len, int number)
+{
+    char whitespace[len];
+    int index;
+
+    index = 0;
+    while(index < len)
+        whitespace[index++] = ' ';
+    ft_putnbr(number);
+    write(1, whitespace, len);
+}
+
+void ft_before_print_stack(t_stacks *stackAB, t_list **tmpA, t_list **tmpB, int *dif)
+{
+    if (stackAB->lenght[0] > stackAB->lenght[1])
+    {
+        *tmpA = stackAB->stacks[0];
+        *tmpB = stackAB->stacks[1];
+        *dif = stackAB->lenght[0] - stackAB->lenght[1];
+    }
+    else
+    {
+        *tmpA = stackAB->stacks[1];
+        *tmpB = stackAB->stacks[0];
+        *dif = stackAB->lenght[1] - stackAB->lenght[0];
+    }
+}
+
+void ft_print_stack(t_stacks *stackAB, int index)
+{
+    t_list *tmpA;
+    t_list *tmpB;
+    int dif;
+
+    ft_before_print_stack(stackAB, &tmpA, &tmpB, &dif);
+    while (1)
+    {
+        ft_print_whitespace(15 - ft_num_len(tmpA->data), tmpA->data);
+        if (dif < 1)
+        {
+            ft_putnbr(tmpB->data);
+            tmpB = tmpB->next;
+        }
+        write(1, "\n", 1);
+        tmpA = tmpA->next;
+        dif--;
+        if (tmpA == stackAB->stacks[index])
+            break;
+    }
+    write(1, "-----------------------------\n", 30);
+    write(1, "stack A        stack B", 22);
 }
 
 int main(int argc, char** argv)
@@ -79,14 +217,13 @@ int main(int argc, char** argv)
     stackAB.lenght[1] = 0;
     if (argc > 1){
         ft_isdigit(argc, argv, &stackAB);
-//        swap(&stackAB, 0);
-		rotate_or_reverse_rotate(&stackAB, 0, '+');
-		
         push(&stackAB, 1, 0);
-        push(&stackAB, 1, 0);
-        push(&stackAB, 0, 1);
-        push(&stackAB, 0, 1);
+        ft_two_elem(&stackAB);
+        write(1, "-----------------------------\n", 30);
+        ft_print_stack(&stackAB, 0);
+
     }
+
     return (0);
 }
 
