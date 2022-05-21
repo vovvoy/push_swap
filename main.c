@@ -110,49 +110,48 @@ int ft_num_len(int number)
     return (len);
 }
 
-void ft_tree_elem(t_stacks *stackAB)
-{
-    int a[3];
+//void ft_tree_elem(t_stacks *stackAB)
+//{
+//    int a[3];
+//
+//    while(1)
+//    {
+//        a[0] = stackAB->stacks[0]->data;
+//        a[1] = stackAB->stacks[0]->next->data;
+//        a[2] = stackAB->stacks[0]->prev->data;
+//        if ((a[2] > a[1] && a[2] > a[0] && a[0] > a[1]) ||
+//            (a[0] > a[1] && a[0] > a[2] && a[1] > a[2]) ||
+//            (a[1] > a[2] && a[1] > a[0] && a[2] > a[0]))
+//        {
+//            swap(stackAB, 0);
+//            write(1, "sa\n", 3);
+//        }
+//        else if (a[1] > a[0] && a[1] > a[2] && a[0] > a[2])
+//        {
+//            rotate_or_reverse_rotate(stackAB, 0, '-');
+//            write(1, "rra\n", 4);
+//        }
+//        else if (a[0] > a[1] && a[0] > a[2]  && a[2] > a[1])
+//        {
+//            rotate_or_reverse_rotate(stackAB, 0, '+');
+//            write(1, "ra\n", 3);
+//        }
+//        else
+//            break;
+//    }
+//}
 
-    while(1)
-    {
-        a[0] = stackAB->stacks[0]->data;
-        a[1] = stackAB->stacks[0]->next->data;
-        a[2] = stackAB->stacks[0]->prev->data;
-        if ((a[2] > a[1] && a[2] > a[0] && a[0] > a[1]) ||
-            (a[0] > a[1] && a[0] > a[2] && a[1] > a[2]) ||
-            (a[1] > a[2] && a[1] > a[0] && a[2] > a[0]))
-        {
-            swap(stackAB, 0);
-            write(1, "sa\n", 3);
-        }
-        else if (a[1] > a[0] && a[1] > a[2] && a[0] > a[2])
-        {
-            rotate_or_reverse_rotate(stackAB, 0, '-');
-            write(1, "rra\n", 4);
-        }
-        else if (a[0] > a[1] && a[0] > a[2]  && a[2] > a[1])
-        {
-            rotate_or_reverse_rotate(stackAB, 0, '+');
-            write(1, "ra\n", 3);
-        }
-        else
-            break;
-    }
-}
-
-void ft_two_elem(t_stacks *stackAB)
-{
-    if (stackAB->stacks[0]->data > stackAB->stacks[0]->next->data)
-    {
-        rotate_or_reverse_rotate(stackAB, 0, '+');
-        write(1, "ra\n", 3);
-    }
-}
+//void ft_two_elem(t_stacks *stackAB)
+//{
+//    if (stackAB->stacks[0]->data > stackAB->stacks[0]->next->data)
+//    {
+//        rotate_or_reverse_rotate(stackAB, 0, '+');
+//        write(1, "ra\n", 3);
+//    }
+//}
 
 void ft_best_move(t_stacks *stackAB)
 {
-
 
 }
 
@@ -184,7 +183,7 @@ void ft_before_print_stack(t_stacks *stackAB, t_list **tmpA, t_list **tmpB, int 
     }
 }
 
-void ft_print_stack(t_stacks *stackAB, int index)
+void ft_print_stack(t_stacks *stackAB)
 {
     t_list *tmpA;
     t_list *tmpB;
@@ -202,11 +201,106 @@ void ft_print_stack(t_stacks *stackAB, int index)
         write(1, "\n", 1);
         tmpA = tmpA->next;
         dif--;
-        if (tmpA == stackAB->stacks[index])
+        if (tmpA == stackAB->stacks[1])
             break;
     }
     write(1, "-----------------------------\n", 30);
-    write(1, "stack A        stack B", 22);
+    write(1, "stack A        stack B\n", 23);
+}
+
+int *find_max_min(t_stacks *stackAB)
+{
+    static int max_min[2];
+    t_list *tmpA;
+
+    max_min[0] = -2147483648;
+    max_min[1] = 2147483647;
+    tmpA = stackAB->stacks[0];
+    while (1)
+    {
+        if (max_min[0] < tmpA->data)
+            max_min[0] = tmpA->data;
+        if (max_min[1] > tmpA->data)
+            max_min[1] = tmpA->data;
+        tmpA = tmpA->next;
+        if (tmpA == stackAB->stacks[0])
+            break;
+    }
+    return (max_min);
+}
+
+void rotate(t_stacks *stackAB, int index)
+{
+    while (index > 0 && index < stackAB->lenght[0])
+        if (stackAB->lenght[0] / 2 >= index)
+        {
+            rotate_or_reverse_rotate(stackAB, 0, '+');
+            write(1, "ra\n", 3);
+            index--;
+        }
+        else
+        {
+            rotate_or_reverse_rotate(stackAB, 0, '-');
+            write(1, "rra\n", 4);
+            index++;
+        }
+    swap(stackAB, 0);
+    write(1, "sa\n", 3);
+}
+
+int issorted(t_stacks *stackAB, int i, int max)
+{
+    t_list *tmp;
+
+    tmp = stackAB->stacks[i];
+    while(1)
+    {
+        if (tmp->data > tmp->next->data && tmp->data != max)
+            return 0;
+        tmp = tmp->next;
+        if (tmp == stackAB->stacks[0])
+            break;
+    }
+    return 1;
+}
+
+void sort_five_less_stack(t_stacks *stackAB)
+{
+    t_list *tmp;
+    int i;
+    int *max_min;
+
+    i = 0;
+    max_min = find_max_min(stackAB);
+    tmp = stackAB->stacks[0];
+    while (1)
+    {
+        if (tmp->data > tmp->next->data && tmp->data != max_min[0] /*&& tmp->next->data == max_min[1]*/)
+        {
+            rotate(stackAB, i);
+            i = 1;
+            continue;
+        }
+        if (issorted(stackAB, 0, max_min[0]))
+        {
+
+            break;
+        }
+        tmp = tmp->next;
+        i++;
+        if (tmp == stackAB->stacks[0])
+            i = 0;
+    }
+}
+
+void move_all_to_stack_b(t_stacks *stackAB)
+{
+    while (stackAB->lenght[0] > 5)
+    {
+        push(stackAB, 1, 0);
+        write(1, "pb\n", 3);
+    }
+    sort_five_less_stack(stackAB);
 }
 
 int main(int argc, char** argv)
@@ -217,10 +311,11 @@ int main(int argc, char** argv)
     stackAB.lenght[1] = 0;
     if (argc > 1){
         ft_isdigit(argc, argv, &stackAB);
-        push(&stackAB, 1, 0);
-        ft_two_elem(&stackAB);
+        move_all_to_stack_b(&stackAB);
+//        push(&stackAB, 1, 0);
+//        ft_two_elem(&stackAB);
         write(1, "-----------------------------\n", 30);
-        ft_print_stack(&stackAB, 0);
+        ft_print_stack(&stackAB);
 
     }
 
