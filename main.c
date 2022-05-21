@@ -155,7 +155,7 @@ void ft_best_move(t_stacks *stackAB)
 
 }
 
-void ft_print_whitespace(int len, int number)
+void ft_print_whitespace(int len, int number, int id)
 {
     char whitespace[len];
     int index;
@@ -163,8 +163,14 @@ void ft_print_whitespace(int len, int number)
     index = 0;
     while(index < len)
         whitespace[index++] = ' ';
-    ft_putnbr(number);
-    write(1, whitespace, len);
+	if (id == 1)
+		write(1, whitespace, len);
+	
+	ft_putnbr(number);
+	if (id == 0)
+		write(1, whitespace, len);
+	if (id == 1)
+		write(1, "\n", 1);
 }
 
 void ft_before_print_stack(t_stacks *stackAB, t_list **tmpA, t_list **tmpB, int *dif)
@@ -185,24 +191,37 @@ void ft_before_print_stack(t_stacks *stackAB, t_list **tmpA, t_list **tmpB, int 
 
 void ft_print_stack(t_stacks *stackAB)
 {
-    t_list *tmpA;
-    t_list *tmpB;
+    t_list *tmp[2];
     int dif;
 
-    ft_before_print_stack(stackAB, &tmpA, &tmpB, &dif);
+    tmp[0] = stackAB->stacks[0];
+	tmp[1] = stackAB->stacks[1];
+	dif = stackAB->lenght[0] - stackAB->lenght[1];
     while (1)
     {
-        ft_print_whitespace(15 - ft_num_len(tmpA->data), tmpA->data);
-        if (dif < 1)
-        {
-            ft_putnbr(tmpB->data);
-            tmpB = tmpB->next;
-        }
-        write(1, "\n", 1);
-        tmpA = tmpA->next;
-        dif--;
-        if (tmpA == stackAB->stacks[1])
-            break;
+		if (dif < 0)
+		{
+			ft_print_whitespace(15, tmp[1]->data, 1);
+			tmp[1] = tmp[1]->next;
+			dif++;
+			continue;
+		}
+		else if (dif > 0)
+		{
+			ft_print_whitespace(15 - ft_num_len(tmp[0]->data), tmp[0]->data, 0);
+			tmp[0] = tmp[0]->next;
+			dif--;
+			continue;
+		}
+		else
+		{
+			ft_print_whitespace(15 - ft_num_len(tmp[0]->data), tmp[0]->data, 0);
+			ft_print_whitespace(0, tmp[1]->data, 1);
+			tmp[0] = tmp[0]->next;
+			tmp[1] = tmp[1]->next;
+		}
+		if (tmp[0] == stackAB->stacks[0] && tmp[1] == stackAB->stacks[1])
+			break;
     }
     write(1, "-----------------------------\n", 30);
     write(1, "stack A        stack B\n", 23);
