@@ -15,6 +15,7 @@ typedef struct      s_stacks
 {
     t_list          *stacks[2];
     int             lenght[2];
+    int             max_min[2];
 }                   t_stacks;
 
 t_list * new_node(int data)

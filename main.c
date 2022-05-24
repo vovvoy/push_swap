@@ -150,9 +150,29 @@ int ft_num_len(int number)
 //    }
 //}
 
-void ft_best_move(t_stacks *stackAB)
+int ft_best_move_in_a(t_stacks *stackAB, int target)
 {
+    int max;
+    int closest_max;
+}
 
+void ft_best_move_in_b(t_stacks *stackAB)
+{
+    t_list * rotate_tmp;
+    t_list * reverte_rotate_tmp;
+    int index;
+
+    index = 0;
+    rotate_tmp = stackAB->stacks[1];
+    reverte_rotate_tmp = stackAB->stacks[1]->prev;
+    while (index <= (stackAB->lenght[1] + 1) / 2)
+    {
+        ft_best_move_in_a(stackAB, rotate_tmp->data);
+        ft_best_move_in_a(stackAB, reverte_rotate_tmp->data);
+        rotate_tmp = rotate_tmp->next;
+        reverte_rotate_tmp = reverte_rotate_tmp->prev;
+        index++;
+    }
 }
 
 void ft_print_whitespace(int len, int number, int id)
@@ -227,25 +247,24 @@ void ft_print_stack(t_stacks *stackAB)
     write(1, "stack A        stack B\n", 23);
 }
 
-int *find_max_min(t_stacks *stackAB)
+void find_max_min(t_stacks *stackAB)
 {
     static int max_min[2];
     t_list *tmpA;
 
-    max_min[0] = -2147483648;
-    max_min[1] = 2147483647;
+    stackAB->max_min[0] = -2147483648;
+    stackAB->max_min[1] = 2147483647;
     tmpA = stackAB->stacks[0];
     while (1)
     {
-        if (max_min[0] < tmpA->data)
-            max_min[0] = tmpA->data;
-        if (max_min[1] > tmpA->data)
-            max_min[1] = tmpA->data;
+        if (stackAB->max_min[0] < tmpA->data)
+            stackAB->max_min[0] = tmpA->data;
+        if (stackAB->max_min[1] > tmpA->data)
+            stackAB->max_min[1] = tmpA->data;
         tmpA = tmpA->next;
         if (tmpA == stackAB->stacks[0])
             break;
     }
-    return (max_min);
 }
 
 void rotate(t_stacks *stackAB, int index)
@@ -287,20 +306,19 @@ void sort_five_less_stack(t_stacks *stackAB)
 {
     t_list *tmp;
     int i;
-    int *max_min;
 
     i = 0;
-    max_min = find_max_min(stackAB);
+    find_max_min(stackAB);
     tmp = stackAB->stacks[0];
     while (1)
     {
-        if (tmp->data > tmp->next->data && tmp->data != max_min[0] /*&& tmp->next->data == max_min[1]*/)
+        if (tmp->data > tmp->next->data && tmp->data != stackAB->max_min[0] /*&& tmp->next->data == max_min[1]*/)
         {
             rotate(stackAB, i);
             i = 1;
             continue;
         }
-        if (issorted(stackAB, 0, max_min[0]))
+        if (issorted(stackAB, 0, stackAB->max_min[0]))
         {
 
             break;
