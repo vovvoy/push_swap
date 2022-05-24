@@ -152,14 +152,36 @@ int ft_num_len(int number)
 
 int ft_best_move_in_a(t_stacks *stackAB, int target)
 {
-    int max;
     int closest_max;
+    t_list *tmp;
+    int ret_val;
+    int i;
+
+    i = 0;
+    closest_max = -2147483648;
+    tmp = stackAB->stacks[0];
+    while (i < stackAB->lenght[0])
+    {
+        if (target > stackAB->max_min[0] && tmp->data == stackAB->max_min[1])
+            return i;
+        else if (target < stackAB->max_min[1] && tmp->data == stackAB->max_min[0])
+            return i;
+        else if (tmp->data < target && tmp->data >= closest_max)
+        {
+            closest_max = tmp->data;
+            ret_val = i;
+        }
+        i++;
+        tmp = tmp->next;
+    }
+    return ret_val;
 }
 
 void ft_best_move_in_b(t_stacks *stackAB)
 {
     t_list * rotate_tmp;
     t_list * reverte_rotate_tmp;
+    int rotate_rrotate[2];
     int index;
 
     index = 0;
@@ -167,8 +189,8 @@ void ft_best_move_in_b(t_stacks *stackAB)
     reverte_rotate_tmp = stackAB->stacks[1]->prev;
     while (index <= (stackAB->lenght[1] + 1) / 2)
     {
-        ft_best_move_in_a(stackAB, rotate_tmp->data);
-        ft_best_move_in_a(stackAB, reverte_rotate_tmp->data);
+        rotate_rrotate[0] = ft_best_move_in_a(stackAB, rotate_tmp->data);
+        rotate_rrotate[1] = ft_best_move_in_a(stackAB, reverte_rotate_tmp->data);
         rotate_tmp = rotate_tmp->next;
         reverte_rotate_tmp = reverte_rotate_tmp->prev;
         index++;
@@ -349,6 +371,7 @@ int main(int argc, char** argv)
     if (argc > 1){
         ft_isdigit(argc, argv, &stackAB);
         move_all_to_stack_b(&stackAB);
+        ft_best_move_in_b(&stackAB);
 //        push(&stackAB, 1, 0);
 //        ft_two_elem(&stackAB);
         write(1, "-----------------------------\n", 30);
