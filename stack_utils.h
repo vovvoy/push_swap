@@ -18,6 +18,13 @@ typedef struct      s_stacks
     int             max_min[2];
 }                   t_stacks;
 
+typedef struct      s_best_move
+{
+    int             a_id;
+    int             b_id;
+    int             moves;
+}                   t_bmove;
+
 t_list * new_node(int data)
 {
     t_list* new = (t_list*) malloc(sizeof(t_list));

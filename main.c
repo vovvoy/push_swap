@@ -110,46 +110,6 @@ int ft_num_len(int number)
     return (len);
 }
 
-//void ft_tree_elem(t_stacks *stackAB)
-//{
-//    int a[3];
-//
-//    while(1)
-//    {
-//        a[0] = stackAB->stacks[0]->data;
-//        a[1] = stackAB->stacks[0]->next->data;
-//        a[2] = stackAB->stacks[0]->prev->data;
-//        if ((a[2] > a[1] && a[2] > a[0] && a[0] > a[1]) ||
-//            (a[0] > a[1] && a[0] > a[2] && a[1] > a[2]) ||
-//            (a[1] > a[2] && a[1] > a[0] && a[2] > a[0]))
-//        {
-//            swap(stackAB, 0);
-//            write(1, "sa\n", 3);
-//        }
-//        else if (a[1] > a[0] && a[1] > a[2] && a[0] > a[2])
-//        {
-//            rotate_or_reverse_rotate(stackAB, 0, '-');
-//            write(1, "rra\n", 4);
-//        }
-//        else if (a[0] > a[1] && a[0] > a[2]  && a[2] > a[1])
-//        {
-//            rotate_or_reverse_rotate(stackAB, 0, '+');
-//            write(1, "ra\n", 3);
-//        }
-//        else
-//            break;
-//    }
-//}
-
-//void ft_two_elem(t_stacks *stackAB)
-//{
-//    if (stackAB->stacks[0]->data > stackAB->stacks[0]->next->data)
-//    {
-//        rotate_or_reverse_rotate(stackAB, 0, '+');
-//        write(1, "ra\n", 3);
-//    }
-//}
-
 int ft_best_move_in_a(t_stacks *stackAB, int target)
 {
     int closest_max;
@@ -177,22 +137,52 @@ int ft_best_move_in_a(t_stacks *stackAB, int target)
     return ret_val;
 }
 
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    return b;
+}
+
+int ft_move(t_stacks *stackAB, int a, int b)
+{
+    int mid_a;
+    int mid_b;
+
+    mid_a = (stackAB->lenght[0] + 1) / 2;
+    mid_b = (stackAB->lenght[1] + 1) / 2;
+    if (mid_a > a && mid_b > b)
+        return max(a, b);
+    else if (mid_a <= a && mid_b <= b)
+        return max(stackAB->lenght[0] - a, stackAB->lenght[1] - b);
+    else if (mid_a > a && mid_b <= b)
+        return (a + stackAB->lenght[1] - b);
+    else if (mid_a <= a && mid_b > b)
+        return (stackAB->lenght[0] - a + b);
+}
+
 void ft_best_move_in_b(t_stacks *stackAB)
 {
     t_list * rotate_tmp;
-    t_list * reverte_rotate_tmp;
-    int rotate_rrotate[2];
+    int move;
+    t_bmove bmove;
+    int a_id;
     int index;
 
     index = 0;
+    bmove.moves = 10000;
     rotate_tmp = stackAB->stacks[1];
-    reverte_rotate_tmp = stackAB->stacks[1]->prev;
-    while (index <= (stackAB->lenght[1] + 1) / 2)
+    while (index < stackAB->lenght[1])
     {
-        rotate_rrotate[0] = ft_best_move_in_a(stackAB, rotate_tmp->data);
-        rotate_rrotate[1] = ft_best_move_in_a(stackAB, reverte_rotate_tmp->data);
+        a_id = ft_best_move_in_a(stackAB, rotate_tmp->data);
+        move = ft_move(stackAB, a_id, index);
+        if (bmove.moves > move)
+        {
+            bmove.a_id = a_id;
+            bmove.b_id = index;
+            bmove.moves = move;
+        }
         rotate_tmp = rotate_tmp->next;
-        reverte_rotate_tmp = reverte_rotate_tmp->prev;
         index++;
     }
 }
@@ -381,5 +371,3 @@ int main(int argc, char** argv)
 
     return (0);
 }
-
-//54 634 546 23
