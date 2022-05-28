@@ -11,19 +11,20 @@ typedef struct      s_list
     struct s_list   *prev;
 }                   t_list;
 
+typedef struct      s_best_move
+{
+//    int             a_id;
+//    int             b_id;
+    int             moves[7];
+}                   t_bmove;
+
 typedef struct      s_stacks
 {
     t_list          *stacks[2];
     int             lenght[2];
     int             max_min[2];
+//    int             moves[7];
 }                   t_stacks;
-
-typedef struct      s_best_move
-{
-    int             a_id;
-    int             b_id;
-    int             moves;
-}                   t_bmove;
 
 t_list * new_node(int data)
 {
