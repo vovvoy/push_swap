@@ -110,14 +110,14 @@ int ft_num_len(int number)
     return (len);
 }
 
-void moves_default_value(int **moves)
+void moves_default_value(int *moves)
 {
     int i;
 
     i = 0;
-    *(moves + 0) = 2147483647;
+    moves[0] = 2147483647;
     while (++i < 7)
-        *(moves + i) = 0;
+        moves[i] = 0;
 }
 
 int ft_best_move_in_a(t_stacks *stackAB, int target)
@@ -147,59 +147,59 @@ int ft_best_move_in_a(t_stacks *stackAB, int target)
     return ret_val;
 }
 
-int max(int a, int b, int **moves, int index)
+int max(int a, int b, int *moves, int index)
 {
     moves_default_value(moves);
     if (a > b)
     {
         if (index) {
-            *(moves + 4) = a - b;
-            *(moves + 6) = b;
+            moves[4] = a - b;
+            moves[6] = b;
         }
         else
         {
-            *(moves + 1) = a - b;
-            *(moves + 3) = b;
+            moves[1] = a - b;
+            moves[3] = b;
         }
         return a;
     }
     if (index)
     {
-        *(moves + 5) = b - a;
-        *(moves + 6) = a;
+        moves[5] = b - a;
+        moves[6] = a;
     }
     else
     {
-        *(moves + 2) = b - a;
-        *(moves + 3) = a;
+        moves[2] = b - a;
+        moves[3] = a;
     }
     return b;
 }
 
-int  ft_count_move(t_stacks *stackAB, int a, int b, int **moves)
+void  ft_count_move(t_stacks *stackAB, int a, int b, int *moves)
 {
     int mid_a;
     int mid_b;
 
     mid_a = (stackAB->lenght[0] + 1) / 2;
     mid_b = (stackAB->lenght[1] + 1) / 2;
-    if (mid_a > a && mid_b > b && *(moves + 0) > max(a, b,moves, 0))
-        return max(a, b,moves, 0);
-    else if (mid_a <= a && mid_b <= b && *(moves + 0) > max(stackAB->lenght[0] - a, stackAB->lenght[1] - b, moves, 1))
-        return max(stackAB->lenght[0] - a, stackAB->lenght[1] - b, moves, 1);
-    else if (mid_a > a && mid_b <= b && *(moves + 0) > (a + stackAB->lenght[1] - b))
+    if (mid_a > a && mid_b > b && moves[0] > max(a, b,moves, 0))
+        moves[0] = max(a, b,moves, 0);
+    else if (mid_a <= a && mid_b <= b && moves[0] > max(stackAB->lenght[0] - a, stackAB->lenght[1] - b, moves, 1))
+        moves[0] = max(stackAB->lenght[0] - a, stackAB->lenght[1] - b, moves, 1);
+    else if (mid_a > a && mid_b <= b && moves[0] > (a + stackAB->lenght[1] - b))
     {
         moves_default_value(moves);
-        *(moves + 4) = a;
-        *(moves + 2) = stackAB->lenght[1] - b;
-        return (a + stackAB->lenght[1] - b);
+        moves[4] = a;
+        moves[2] = stackAB->lenght[1] - b;
+        moves[0] = (a + stackAB->lenght[1] - b);
     }
-    else if (mid_a <= a && mid_b > b && *(moves + 0) > (stackAB->lenght[0] - a + b))
+    else if (mid_a <= a && mid_b > b && moves[0] > (stackAB->lenght[0] - a + b))
     {
         moves_default_value(moves);
-        *(moves + 1) = a;
-        *(moves + 5) = b;
-        return (stackAB->lenght[0] - a + b);
+        moves[1] = a;
+        moves[5] = b;
+        moves[0] = (stackAB->lenght[0] - a + b);
     }
 }
 
@@ -207,25 +207,22 @@ void ft_best_move_in_b(t_stacks *stackAB)
 {
     t_list * rotate_tmp;
     int move;
-    int **moves;
+    int *moves;
     int a_id;
     int index;
 
     index = 0;
-    moves = (int**)malloc(sizeof(int*));
-    moves[0] = (int*)malloc(sizeof(int));
+    moves = (int*)malloc(7 * sizeof(int));
     rotate_tmp = stackAB->stacks[1];
     moves_default_value(moves);
-    while (index < stackAB->lenght[1])
-    {
-        a_id = ft_best_move_in_a(stackAB, rotate_tmp->data);
-        ft_count_move(stackAB, a_id, index, moves);
-        rotate_tmp = rotate_tmp->next;
-        index++;
-    }
-    ft_putnbr(*(moves + 4));
+    while (index < stackAB->lenght[1]) {
+		a_id = ft_best_move_in_a(stackAB, rotate_tmp->data);
+		ft_count_move(stackAB, a_id, index, moves);
+		rotate_tmp = rotate_tmp->next;
+		index++;
+	}
 }
-
+//0x7f9cbe5003d0
 void ft_print_whitespace(int len, int number, int id)
 {
     char whitespace[len];
